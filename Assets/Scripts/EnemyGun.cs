@@ -9,29 +9,21 @@ public class EnemyGun : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("FireBullet", 1f);
+        InvokeRepeating("FireBullet", 1f, 1f);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     void FireBullet()
     {
-        GameObject player = GameObject.Find("Player");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
 
-        if(player == null )
+        if (player != null)
         {
+            Debug.Log("jugador encontrado");
             GameObject bullet = (GameObject)Instantiate(EnemyBullet);
-
             bullet.transform.position = transform.position;
 
-            Vector2 direction = player.transform.position - bullet.transform.position;  
-
+            Vector2 direction = player.transform.position - bullet.transform.position;
             bullet.GetComponent<EnemyBullet>().SetDirection(direction);
-
-
         }
     }
 }

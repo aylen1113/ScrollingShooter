@@ -1,33 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using System.Collections;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerControl : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed;
     private Rigidbody2D rb;
-    Vector2 mousePos;
 
     public GameObject PlayerBullet;
     public GameObject bulletPosition01;
     public GameObject bulletPosition02;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        Movement();
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
 
-       
-        if (Input.mousePosition.x >= 0 && Input.mousePosition.y >= 0 &&
-            Input.mousePosition.x <= Screen.width && Input.mousePosition.y <= Screen.height)
-        {
-            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
+        Vector2 direction = new Vector2(x, y).normalized;
+
+
+        Move(direction);
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -39,18 +37,40 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+
+
+void Move(Vector2 direction)
     {
-        Vector2 lookDirection = mousePos - rb.position;
-        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
-        rb.rotation = angle;
+      
+        Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)); 
+        Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1)); 
+        //max.x = max.x - 0.225f; //subtract the player sprite half width
+        //min.x = min.x + 0.225f; //add the player sprite half width
+
+        //max.y = max.y - 0.285f; //subtract the player sprite half height
+        //min.y = min.y + 0.285f; //add the player sprite half height
+
+    
+        Vector2 pos = transform.position;
+
+ 
+        pos += direction * speed * Time.deltaTime;
+
+     
+        pos.x = Mathf.Clamp(pos.x, min.x, max.x);
+        pos.y = Mathf.Clamp(pos.y, min.y, max.y);
+
+     
+        transform.position = pos;
     }
 
-    private void Movement()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
+        if (collision.CompareTag("Enemy") || (collision.CompareTag("EnemyBullet")))
+        {
+            Destroy(gameObject);
 
-        rb.velocity = new Vector2(x * speed * Time.fixedDeltaTime, y * speed * Time.fixedDeltaTime);
+        }
     }
 }
+
