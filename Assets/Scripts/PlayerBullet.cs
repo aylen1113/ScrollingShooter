@@ -34,6 +34,7 @@ public class PlayerBullet : MonoBehaviour
     {
         if ((collision.CompareTag("Enemy")) || (collision.CompareTag("EnemyBullet")))
         {
+            Destroy(collision.gameObject);
             Destroy(gameObject);
 
         }
