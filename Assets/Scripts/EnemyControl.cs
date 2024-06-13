@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class EnemyControl : MonoBehaviour
 {
-    GameObject scoreUItext;
+    //GameObject scoreUItext;
     float speed;
 
     // Start is called before the first frame update
     void Start()
     {
         speed = 5f;
-        scoreUItext = GameObject.FindGameObjectWithTag("ScoreText");
+        //scoreUItext = GameObject.FindGameObjectWithTag("ScoreText");
 
     }
 
@@ -34,7 +34,7 @@ public class EnemyControl : MonoBehaviour
     {
         if (collision.CompareTag("PlayerBullet"))
         {
-            GameScore.inst.AddScore();
+            GameManager.inst.AddScore(50);
 
             Destroy(gameObject); 
         }
